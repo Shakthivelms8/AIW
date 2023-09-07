@@ -325,7 +325,7 @@
                       ]
                     },
                     "protectedSettings": {
-                      "commandToExecute": "[concat('powershell.exe -ExecutionPolicy ByPass -File scripttt', variables('cloudlabsCommon'), variables('Enable-CloudLabsEmbeddedShadow'))]"
+                      "commandToExecute": "[concat('powershell.exe -ExecutionPolicy ByPass -File scripttt.ps1', variables('cloudlabsCommon'), variables('Enable-CloudLabsEmbeddedShadow'))]"
                     }
                   }
                 }
