@@ -1,0 +1,69 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "diskStorageType": {
+            "value": "Standard_LRS"
+        },
+        "vmAdminUsername": {
+            "value": "azureuser"
+        },
+        "vmAdminPassword": {
+            "value": null
+        },
+        "installCloudLabsShadow": {
+            "value": "yes"
+        },
+        "location": {
+            "value": "northeurope"
+        },
+        "dbusername": {
+            "value": "sqluser"
+        },
+        "dbpasswd": {
+            "value": null
+        },
+        "serverEdition": {
+            "value": "Burstable"
+        },
+        "version": {
+            "value": "8.0.21"
+        },
+        "availabilityZone": {
+            "value": "1"
+        },
+        "haEnabled": {
+            "value": "Disabled"
+        },
+        "standbyAvailabilityZone": {
+            "value": "2"
+        },
+        "storageSizeGB": {
+            "value": 20
+        },
+        "storageIops": {
+            "value": 360
+        },
+        "storageAutogrow": {
+            "value": "Enabled"
+        },
+        "skuName": {
+            "value": "Standard_B1ms"
+        },
+        "backupRetentionDays": {
+            "value": 7
+        },
+        "geoRedundantBackup": {
+            "value": "Disabled"
+        },
+        "serverName": {
+            "value": "server458654"
+        },
+        "databaseName": {
+            "value": "database6908765"
+        },
+        "serviceName": {
+            "value": "sqlservice65434654"
+        }
+    }
+}
