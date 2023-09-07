@@ -1,0 +1,98 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "AzureUserName": {
+      "value": "GET-AZUSER-UPN"
+    },
+    "AzurePassword": {
+      "value": "GET-AZUSER-PASSWORD"
+    },
+    "DeploymentID": {
+      "value": "GET-DEPLOYMENT-ID"
+    },
+    "ODLID": {
+      "value": "GET-ODL-ID"
+    },
+    "diskStorageType": {
+      "value": "Standard_LRS"
+    },
+    "vmAdminUsername": {
+      "value": "demouser"
+    },
+    "vmAdminPassword": {
+      "value": "GEN-PASSWORD"
+    },
+    "InstallCloudLabsShadow": {
+      "value": "yes"
+    },
+    "azuserobjectid": {
+      "value": "GET-AZUSER-OBJECTID"
+    },
+    "trainerUserName": {
+      "value": "trainer"
+    },
+    "trainerUserPassword": {
+      "value": "GEN-PASSWORD"
+    },
+    "AppID": {
+      "value": "GET-SERVICEPRINCIPAL-APPLICATION-ID"
+    },
+    "AppSecret": {
+      "value": "GET-SERVICEPRINCIPAL-SECRET"
+    },
+    "dbusername": {
+      "value": "azuresqluser"
+    },
+    "dbpasswd": {
+      "value": "Password.1!!"
+    },
+    "firewallRules": {
+      "value": [
+        {
+          "name": "rule1",
+          "startIPAddress": "192.168.0.1",
+          "endIPAddress": "192.168.0.255"
+        },
+        {
+          "name": "rule2",
+          "startIPAddress": "192.168.1.1",
+          "endIPAddress": "192.168.1.255"
+        }
+      ]
+    },
+    "serverEdition": {
+      "value": "Burstable"
+    },
+    "version": {
+      "value": "8.0.21"
+    },
+    "availabilityZone": {
+      "value": "1"
+    },
+    "haEnabled": {
+      "value": "Disabled"
+    },
+    "standbyAvailabilityZone": {
+      "value": "2"
+    },
+    "storageSizeGB": {
+      "value": 20
+    },
+    "storageIops": {
+      "value": 360
+    },
+    "storageAutogrow": {
+      "value": "Enabled"
+    },
+    "skuName": {
+      "value": "Standard_B1ms"
+    },
+    "backupRetentionDays": {
+      "value": 7
+    },
+    "geoRedundantBackup": {
+      "value": "Disabled"
+    }
+  }
+}
