@@ -9,13 +9,13 @@
     [string]
     $AzureTenantID,
 
-	[string]
+    [string]
     $AppID,
 
-	[string]
+    [string]
     $AppSecret,
 
-	[string]
+    [string]
     $vmAdminPassword,
 
     [string]
@@ -27,7 +27,7 @@
     [string]
     $DeploymentID,
 
-	[string]
+    [string]
     $azuserobjectid,
 
     [string]
