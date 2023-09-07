@@ -321,11 +321,11 @@
                     "autoUpgradeMinorVersion": true,
                     "settings": {
                       "fileUris": [
-                        "https://testrmspektar1234.blob.core.windows.net/test/Deploy-AzureResourceGroup.ps1"
+                        "https://testrmspektar1234.blob.core.windows.net/test/scripttt.ps1"
                       ]
                     },
                     "protectedSettings": {
-                      "commandToExecute": "[concat('powershell.exe -ExecutionPolicy ByPass -File Deploy-AzureResourceGroup.ps1', variables('cloudlabsCommon'), variables('Enable-CloudLabsEmbeddedShadow'))]"
+                      "commandToExecute": "[concat('powershell.exe -ExecutionPolicy ByPass -File scripttt', variables('cloudlabsCommon'), variables('Enable-CloudLabsEmbeddedShadow'))]"
                     }
                   }
                 }
