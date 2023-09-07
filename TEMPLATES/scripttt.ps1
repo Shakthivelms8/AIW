@@ -158,6 +158,13 @@ Function SPtoAzureCredFiles($SPDisplayName, $SPID, $SPObjectID, $SPSecretKey, $A
     Copy-Item "C:\LabFiles\AzureCreds.txt" -Destination "C:\Users\Public\Desktop" -force
 }
 
+Function InstallScreenConnectforSPL
+{
+    $WebClient = New-Object System.Net.WebClient
+    $WebClient.DownloadFile("https://experienceazure.blob.core.windows.net/software/screenconnectspl.msi","C:\Packages\screenconnectspl.msi")
+    Start-Process msiexec.exe -Wait '/I C:\Packages\screenconnectspl.msi /qn' -Verbose
+}
+
 #enable cloudembedded shadow
 Function Enable-CloudLabsEmbeddedShadow($vmAdminUsername, $trainerUserName, $trainerUserPassword)
 {
@@ -246,6 +253,8 @@ Show-File-Extension
 CreateCredFile
 
 SPtoAzureCredFiles
+
+InstallScreenConnectforSPL
 
 Enable-CloudLabsEmbeddedShadow
 
