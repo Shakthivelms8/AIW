@@ -420,6 +420,10 @@
             "type": "String",
             "value": "[parameters('trainerUserPassword')]"
           },
+         "Trainer Username": {
+            "type": "String",
+            "value": "[parameters('trainerUsername')]"
+          },
           "DBusername": {
             "type": "string",
             "value": "[parameters('dbusername')]"
