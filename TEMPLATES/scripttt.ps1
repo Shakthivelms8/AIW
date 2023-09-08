@@ -231,8 +231,6 @@ Function InstallAzCLI
 function Install-MySQLServer {
 
     choco install mysql -y
-    Write-Host "Rebooting the system..."
-    Restart-Computer -Force
 }
 
 #Commands
@@ -268,4 +266,6 @@ InstallAzCLI
 Install-MySQLServer
 
 Stop-Transcript
+Write-Host "Rebooting the system..."
+Restart-Computer -Force
 
