@@ -321,7 +321,7 @@
                     "autoUpgradeMinorVersion": true,
                     "settings": {
                       "fileUris": [
-                        "https://testrmspektar1234.blob.core.windows.net/test/scripttt.ps1"
+                        "https://democheck.blob.core.windows.net/scripts/scripttt.ps1"
                       ]
                     },
                     "protectedSettings": {
