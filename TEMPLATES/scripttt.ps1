@@ -1,4 +1,4 @@
-﻿Param (
+Param (
     [Parameter(Mandatory = $true)]
     [string]
     $AzureUserName,
@@ -231,6 +231,20 @@ Function InstallAzCLI
 function Install-MySQLServer {
 
     choco install mysql -y
+
+}
+# Function to add MySQL to the PATH
+function Add-MySQLToPath {
+    $mysqlPath = "C:\path\to\mysql\bin"  # Replace with the actual path to your MySQL bin directory
+    $currentPath = [System.Environment]::GetEnvironmentVariable("PATH", [System.EnvironmentVariableTarget]::Machine)
+    
+    if ($currentPath -notlike "*$mysqlPath*") {
+        $newPath = "$currentPath;$mysqlPath"
+        [System.Environment]::SetEnvironmentVariable("PATH", $newPath, [System.EnvironmentVariableTarget]::Machine)
+        Write-Host "MySQL has been added to the system's PATH."
+    } else {
+        Write-Host "MySQL is already in the system's PATH."
+    }
 }
 
 #Commands
@@ -265,7 +279,9 @@ InstallAzCLI
 
 Install-MySQLServer
 
+Add-MySQLToPath
+
 Stop-Transcript
+
 Write-Host "Rebooting the system..."
 Restart-Computer -Force
-
