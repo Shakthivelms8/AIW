@@ -404,6 +404,10 @@
         }
     ],
     "outputs": {
+        "Deployment ID": {
+            "type": "String",
+            "value": "[parameters('DeploymentID')]"
+        }
         "LABVM Admin Username": {
             "type": "String",
             "value": "[parameters('vmAdminUsername')]"
@@ -416,25 +420,21 @@
             "type": "String",
             "value": "[concat(variables('vmPublicIpDnsName'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
         },
+        "Trainer Username": {
+            "type": "String",
+            "value": "[parameters('trainerUsername')]"
+        },
         "Trainer Password": {
             "type": "String",
             "value": "[parameters('trainerUserPassword')]"
-          },
-         "Trainer Username": {
-            "type": "String",
-            "value": "[parameters('trainerUsername')]"
-          },
-          "DBusername": {
+        },
+        "DBusername": {
             "type": "string",
             "value": "[parameters('dbusername')]"
-          },
-          "DBpasswd": {
+        },
+        "DBpasswd": {
             "type": "string",
             "value": "[parameters('dbpasswd')]"
-          },
-          "Deployment ID": {
-            "type": "String",
-            "value": "[parameters('DeploymentID')]"
-          }
+        }
     }
 }
