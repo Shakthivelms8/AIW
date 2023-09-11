@@ -30,7 +30,7 @@
       "value": "GET-AZUSER-OBJECTID"
     },
     "trainerUserName": {
-      "value": "trainer"
+      "value": "instructor"
     },
     "trainerUserPassword": {
       "value": "GEN-PASSWORD"
