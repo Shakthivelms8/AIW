@@ -247,6 +247,26 @@ function Add-MySQLToPath {
     }
 }
 
+function Download-MySQLWorkbench {
+    # Define the download URL for the MySQL Workbench MSI file
+    $downloadUrl = "https://cdn.mysql.com/Downloads/MySQLGUITools/mysql-workbench-community-8.0.31-winx64.msi"
+
+    # Define the path where you want to save the downloaded MSI file
+    $downloadPath = "$env:USERPROFILE\Downloads\mysql-workbench.msi"
+
+    # Download the MySQL Workbench MSI file
+    Invoke-WebRequest -Uri $downloadUrl -OutFile $downloadPath
+}
+
+function Install-MySQLWorkbench {
+    param (
+        [string]$msiPath
+    )
+
+    # Install MySQL Workbench using the provided MSI file path
+    Start-Process -FilePath "msiexec.exe" -ArgumentList "/i `"$msiPath`" /qn" -Wait
+}
+
 #Commands
 
 Disable-InternetExplorerESC
@@ -280,6 +300,14 @@ InstallAzCLI
 Install-MySQLServer
 
 Add-MySQLToPath
+
+Download-MySQLWorkbench
+
+$downloadedMSIPath = "$env:USERPROFILE\Downloads\mysql-workbench.msi"
+
+Install-MySQLWorkbench -msiPath $downloadedMSIPath
+
+Remove-Item $downloadedMSIPath -Force
 
 Stop-Transcript
 
