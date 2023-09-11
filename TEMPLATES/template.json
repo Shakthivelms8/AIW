@@ -394,9 +394,9 @@
                 "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName1'), variables('subnetName1'))]"
             ],
             "sku": {
-                "tier": "Standard",
-                "size": "1 vCores",
-                "name": "Standard_1vCores"
+                "tier": "Premium",
+                "size": "4 vCores",
+                "name": "Premium_4vCores"
             },
             "properties": {
                 "virtualSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName1'), variables('subnetName1'))]"
