@@ -249,7 +249,7 @@ function Add-MySQLToPath {
 
 function Download-MySQLWorkbench {
     # Define the download URL for the MySQL Workbench MSI file
-    $downloadUrl = "https://cdn.mysql.com/Downloads/MySQLGUITools/mysql-workbench-community-8.0.31-winx64.msi"
+    $downloadUrl = "https://dev.mysql.com/get/Downloads/MySQLGUITools/mysql-workbench-community-8.0.34-winx64.msi"
 
     # Define the path where you want to save the downloaded MSI file
     $downloadPath = "$env:USERPROFILE\Downloads\mysql-workbench.msi"
