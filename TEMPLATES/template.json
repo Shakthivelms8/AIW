@@ -407,7 +407,11 @@
         "Deployment ID": {
             "type": "String",
             "value": "[parameters('DeploymentID')]"
-        }
+        },
+        "LABVM Name": {
+            "type": "String",
+            "value": "[variables('jumphost')]"
+        },
         "LABVM Admin Username": {
             "type": "String",
             "value": "[parameters('vmAdminUsername')]"
