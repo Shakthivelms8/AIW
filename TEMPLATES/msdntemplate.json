@@ -282,11 +282,11 @@
                     "autoUpgradeMinorVersion": true,
                     "settings": {
                       "fileUris": [
-                        "https://democheck.blob.core.windows.net/scripts/scripttwo.ps1"
+                        "https://democheck.blob.core.windows.net/scripts/msdnscript.ps1"
                       ]
                     },
                     "protectedSettings": {
-                      "commandToExecute": "[concat('powershell.exe -ExecutionPolicy ByPass -File scripttwo.ps1', variables('cloudlabsCommon'), variables('Enable-CloudLabsEmbeddedShadow'))]"
+                      "commandToExecute": "[concat('powershell.exe -ExecutionPolicy ByPass -File msdnscript.ps1', variables('cloudlabsCommon'), variables('Enable-CloudLabsEmbeddedShadow'))]"
                     }
                   }
                 }
