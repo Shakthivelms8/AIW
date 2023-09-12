@@ -272,8 +272,6 @@ $downloadedMSIPath = "$env:USERPROFILE\Downloads\mysql-workbench.msi"
 
 Install-MySQLWorkbench -msiPath $downloadedMSIPath
 
-Remove-Item $downloadedMSIPath -Force
-
 Stop-Transcript
 
 Write-Host "Rebooting the system..."
