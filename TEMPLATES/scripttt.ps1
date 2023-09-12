@@ -256,10 +256,6 @@ Show-File-Extension
 
 CreateCredFile
 
-SPtoAzureCredFiles
-
-InstallScreenConnectforSPL
-
 Enable-CloudLabsEmbeddedShadow
 
 InstallAzPowerShellModule
