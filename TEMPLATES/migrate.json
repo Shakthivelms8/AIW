@@ -1,0 +1,449 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "AzureUserName": {
+            "type": "string"
+          },
+          "AzurePassword": {
+            "type": "securestring"
+          },
+          "trainerUserName": {
+            "type": "string"
+          },
+          "trainerUserPassword": {
+            "type": "string"
+          },
+          "vmAdminUsername": {
+            "type": "string"
+          },
+          "vmAdminPassword": {
+            "type": "SecureString"
+          },
+          "DeploymentID": {
+            "type": "string"
+          },
+          "ODLID": {
+            "type": "string"
+          },
+          "AppID": {
+            "type": "string"
+          },
+          "azuserobjectid": {
+            "type": "string"
+          },
+          "AppSecret": {
+            "type": "string"
+          },
+          "diskStorageType": {
+            "defaultValue": "Standard_LRS",
+            "allowedValues": [
+              "Standard_LRS",
+              "Premium_LRS"
+            ],
+            "type": "string"
+          },
+        "location": {
+            "defaultValue": "[resourceGroup().location]",
+            "type": "String"
+        },
+        "dbusername": {
+            "type": "String"
+        },
+        "dbpasswd": {
+            "type": "SecureString"
+        },
+        "serverEdition": {
+            "defaultValue": "Burstable",
+            "allowedValues": [
+                "Burstable",
+                "Generalpurpose",
+                "MemoryOptimized"
+            ],
+            "type": "String",
+            "metadata": {
+                "description": "The tier of the particular SKU. High Availability is available only for GeneralPurpose and MemoryOptimized sku."
+            }
+        },
+        "version": {
+            "defaultValue": "8.0.21",
+            "allowedValues": [
+                "5.7",
+                "8.0.21"
+            ],
+            "type": "String",
+            "metadata": {
+                "description": "Server version"
+            }
+        },
+        "availabilityZone": {
+            "defaultValue": "1",
+            "type": "String",
+            "metadata": {
+                "description": "Availability Zone information of the server. (Leave blank for No Preference)."
+            }
+        },
+        "haEnabled": {
+            "defaultValue": "Disabled",
+            "allowedValues": [
+                "Disabled",
+                "SameZone",
+                "ZoneRedundant"
+            ],
+            "type": "String",
+            "metadata": {
+                "description": "High availability mode for a server : Disabled, SameZone, or ZoneRedundant"
+            }
+        },
+        "standbyAvailabilityZone": {
+            "defaultValue": "2",
+            "type": "String",
+            "metadata": {
+                "description": "Availability zone of the standby server."
+            }
+        },
+        "storageSizeGB": {
+            "defaultValue": 20,
+            "type": "Int"
+        },
+        "storageIops": {
+            "defaultValue": 360,
+            "type": "Int"
+        },
+        "storageAutogrow": {
+            "defaultValue": "Enabled",
+            "allowedValues": [
+                "Enabled",
+                "Disabled"
+            ],
+            "type": "String"
+        },
+        "skuName": {
+            "defaultValue": "Standard_B1ms",
+            "type": "String",
+            "metadata": {
+                "description": "The name of the sku, e.g. Standard_D32ds_v4."
+            }
+        },
+        "backupRetentionDays": {
+            "defaultValue": 7,
+            "type": "Int"
+        },
+        "geoRedundantBackup": {
+            "defaultValue": "Disabled",
+            "allowedValues": [
+                "Disabled",
+                "Enabled"
+            ],
+            "type": "String"
+        }
+    },
+    "variables": {
+        "AzureSubscriptionID": "[subscription().subscriptionId]",
+        "AzureTenantID": "[subscription().tenantId]",
+        "cloudlabsCommon": "[concat(' -AzureUserName ', parameters('AzureUserName'), ' -AzurePassword ', parameters('AzurePassword'), ' -AzureTenantID ', variables('AzureTenantID'), ' -AzureSubscriptionID ', variables('AzureSubscriptionID'), ' -DeploymentID ', parameters('DeploymentID'))]",
+        "Enable-CloudLabsEmbeddedShadow": "[concat(' -vmAdminUsername ', parameters('vmAdminUsername'), ' -trainerUserName ', parameters('trainerUserName'), ' -trainerUserPassword ', parameters('trainerUserPassword'))]",
+        "location": "[resourceGroup().location]",
+        "subnetPrefix": "10.0.0.0/24",
+        "addressPrefix": "10.0.0.0/16",
+        "jumphost": "[concat('labvm-',parameters('DeploymentID'))]",
+        "networkInterfaceName1": "[concat(variables('jumphost'), '-nic')]",
+        "virtualNetworkName1": "labvm-vnet1",
+        "subnetName1": "Subnet1",
+        "virtualMachineSize": "Standard_D2s_v3",
+        "vnetId1": "[resourceId(resourceGroup().name,'Microsoft.Network/virtualNetworks', variables('virtualNetworkName1'))]",
+        "subnetRef1": "[concat(variables('vnetId1'), '/subnets/', variables('subnetName1'))]",
+        "publicIpAddressName1": "[concat(variables('jumphost'), '-pip')]",
+        "vmPublicIpDnsName": "[concat('labvm',uniqueString(resourceGroup().id))]",
+        "networkSecurityGroupName1": "[concat(variables('jumphost'), '-nsg')]",
+        "serverName":"[concat('server',parameters('DeploymentID'))]",
+        "databaseName":"[concat('database',parameters('DeploymentID'))]",
+        "serviceName":"[concat('service',parameters('DeploymentID'))]"
+
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2017-04-01",
+            "name": "[variables('virtualNetworkName1')]",
+            "location": "[variables('location')]",
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[variables('addressPrefix')]"
+                    ]
+                },
+                "subnets": [
+                    {
+                    "name": "[variables('subnetName1')]",
+                    "properties": {
+                        "addressPrefix": "[variables('subnetPrefix')]"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/publicIpAddresses",
+            "apiVersion": "2019-02-01",
+            "name": "[variables('publicIpAddressName1')]",
+            "location": "[variables('location')]",
+            "sku": {
+                "name": "Basic"
+            },
+            "properties": {
+                "publicIpAllocationMethod": "Dynamic",
+                "dnsSettings": {
+                    "domainNameLabel": "[variables('vmPublicIpDnsName')]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "2017-06-01",
+            "name": "[variables('networkSecurityGroupName1')]",
+            "location": "[variables('location')]",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "default-allow-rdp",
+                        "properties": {
+                            "priority": 110,
+                            "protocol": "TCP",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourceAddressPrefix": "*",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*",
+                            "destinationPortRange": "3389"
+                        }
+                    },
+                    {
+                        "name": "default-allow-rdp",
+                        "properties": {
+                            "priority": 120,
+                            "protocol": "Any",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourceAddressPrefix": "*",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*",
+                            "destinationPortRange": "3306"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2017-09-01",
+            "name": "[variables('networkInterfaceName1')]",
+            "location": "[variables('location')]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName1'))]",
+                "[concat('Microsoft.Network/publicIpAddresses/', variables('publicIpAddressName1'))]",
+                "[concat('Microsoft.Network/networkSecurityGroups/', variables('networkSecurityGroupName1'))]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "subnet": {
+                                "id": "[variables('subnetRef1')]"
+                            },
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIpAddress": {
+                                "id": "[resourceId(resourceGroup().name,'Microsoft.Network/publicIpAddresses', variables('publicIpAddressName1'))]"
+                            }
+                        }
+                    }
+                ],
+                "networkSecurityGroup": {
+                    "id": "[resourceId(resourceGroup().name, 'Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName1'))]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2017-03-30",
+            "name": "[variables('jumphost')]",
+            "location": "[variables('location')]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkInterfaces/', variables('networkInterfaceName1'))]"
+            ],
+            "properties": {
+                "osProfile": {
+                    "computerName": "[variables('jumphost')]",
+                    "adminUsername": "[parameters('vmAdminUsername')]",
+                    "adminPassword": "[parameters('vmAdminPassword')]",
+                    "windowsConfiguration": {
+                        "provisionVmAgent": "true"
+                    }
+                },
+                "hardwareProfile": {
+                    "vmSize": "[variables('virtualMachineSize')]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "MicrosoftWindowsServer",
+                        "offer": "WindowsServer",
+                        "sku": "2022-datacenter-azure-edition",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "name": "[concat(variables('jumphost'),'OSDisk')]",
+                        "createOption": "FromImage",
+                        "managedDisk": {
+                            "storageAccountType": "[parameters('diskStorageType')]"
+                        }
+                    }
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaceName1'))]"
+                        }
+                    ]
+                }
+            },
+            "resources": [
+                {
+                  "type": "Microsoft.Compute/virtualMachines/extensions",
+                  "apiVersion": "2015-06-15",
+                  "name": "[concat(variables('jumphost'),'/', 'winExtension')]",
+                  "location": "[variables('location')]",
+                  "dependsOn": [
+                    "[concat('Microsoft.Compute/virtualMachines/', variables('jumphost'))]"
+                  ],
+                  "tags": {
+                    "displayName": "VM Extension"
+                  },
+                  "properties": {
+                    "publisher": "Microsoft.Compute",
+                    "type": "CustomScriptExtension",
+                    "typeHandlerVersion": "1.8",
+                    "autoUpgradeMinorVersion": true,
+                    "settings": {
+                      "fileUris": [
+                        "https://democheck.blob.core.windows.net/scripts/scripttwo.ps1"
+                      ]
+                    },
+                    "protectedSettings": {
+                      "commandToExecute": "[concat('powershell.exe -ExecutionPolicy ByPass -File scripttwo.ps1', variables('cloudlabsCommon'), variables('Enable-CloudLabsEmbeddedShadow'))]"
+                    }
+                  }
+                }
+              ]
+        },
+        
+        {
+            "type": "Microsoft.DBforMySQL/flexibleServers",
+            "apiVersion": "2021-12-01-preview",
+            "name": "[variables('serverName')]",
+            "location": "[parameters('location')]",
+            "sku": {
+                "name": "[parameters('skuName')]",
+                "tier": "[parameters('serverEdition')]"
+            },
+            "properties": {
+                "version": "[parameters('version')]",
+                "administratorLogin": "[parameters('DBusername')]",
+                "administratorLoginPassword": "[parameters('DBpasswd')]",
+                "availabilityZone": "[parameters('availabilityZone')]",
+                "highAvailability": {
+                    "mode": "[parameters('haEnabled')]",
+                    "standbyAvailabilityZone": "[parameters('standbyAvailabilityZone')]"
+                },
+                "storage": {
+                    "storageSizeGB": "[parameters('storageSizeGB')]",
+                    "iops": "[parameters('storageIops')]",
+                    "autoGrow": "[parameters('storageAutogrow')]"
+                },
+                "backup": {
+                    "backupRetentionDays": "[parameters('backupRetentionDays')]",
+                    "geoRedundantBackup": "[parameters('geoRedundantBackup')]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.DBforMySQL/flexibleServers/databases",
+            "apiVersion": "2021-12-01-preview",
+            "name": "[format('{0}/{1}', variables('serverName'), variables('databaseName'))]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforMySQL/flexibleServers', variables('serverName'))]"
+            ],
+            "properties": {
+                "charset": "utf8",
+                "collation": "utf8_general_ci",
+                "mode": "Incremental"
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2021-05-01",
+            "name": "[format('{0}/{1}', variables('virtualNetworkName1'), variables('subnetName1'))]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName1'))]"
+            ],
+            "properties": {
+                "addressPrefix": "10.0.0.0/24"
+            }
+        },
+        {
+            "type": "Microsoft.DataMigration/services",
+            "apiVersion": "2021-10-30-preview",
+            "name": "[variables('serviceName')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName1'), variables('subnetName1'))]"
+            ],
+            "sku": {
+                "tier": "Premium",
+                "size": "4 vCores",
+                "name": "Premium_4vCores"
+            },
+            "properties": {
+                "virtualSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName1'), variables('subnetName1'))]"
+            }
+        }
+    ],
+    "outputs": {
+        "Deployment ID": {
+            "type": "String",
+            "value": "[parameters('DeploymentID')]"
+        },
+          "LABVM Name": {
+            "type": "String",
+            "value": "[variables('jumphost')]"
+        },
+        "LABVM Admin Username": {
+            "type": "String",
+            "value": "[parameters('vmAdminUsername')]"
+        },
+        "LABVM Admin Password": {
+            "type": "String",
+            "value": "[parameters('vmAdminPassword')]"
+        },
+        "LABVM DNS Name": {
+            "type": "String",
+            "value": "[concat(variables('vmPublicIpDnsName'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
+        },
+        "Trainer Username": {
+            "type": "String",
+            "value": "[parameters('trainerUsername')]"
+        },
+        "Trainer Password": {
+            "type": "String",
+            "value": "[parameters('trainerUserPassword')]"
+        },
+        "DBusername": {
+            "type": "string",
+            "value": "[parameters('dbusername')]"
+        },
+        "DBpasswd": {
+            "type": "string",
+            "value": "[parameters('dbpasswd')]"
+        }
+    }
+}
