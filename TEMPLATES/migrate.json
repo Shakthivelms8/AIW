@@ -219,7 +219,7 @@
                         }
                     },
                     {
-                        "name": "default-allow-rdp",
+                        "name": "default-allow-mysql",
                         "properties": {
                             "priority": 120,
                             "protocol": "Any",
