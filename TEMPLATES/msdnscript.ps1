@@ -1,20 +1,5 @@
-Param (
-    [Parameter(Mandatory = $true)]
-    [string]
-    $vmAdminPassword,
 
-    [string]
-    $vmAdminUsername,
-
-    [string]
-    $trainerUserName,
-
-    [string]
-    $trainerUserPassword
-)
-Start-Transcript -Path C:\WindowsAzure\Logs\CloudLabsCustomScriptExtension.txt -Append
-[Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls
-[Net.ServicePointManager]::SecurityProtocol = "tls12, tls11, tls" 
+Start-Transcript
 
 #Function1 - Disable Enhanced Security for Internet Explorer
 Function Disable-InternetExplorerESC
